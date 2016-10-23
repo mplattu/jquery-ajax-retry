@@ -32,6 +32,12 @@ jQuery(function($) {
   $.ajax(options).retry({times:3, statusCodes: [503, 504]}).then(function(){
     alert("success!");
   });
+
+  //this will run anonymous function before each retry
+  $.ajax(options).retry({times:3, onRetry:function () { console.log("Retrying...");}}).then(function(){
+    alert("success!");
+  });
+
 });
 </script>
 ```

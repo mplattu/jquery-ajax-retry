@@ -27,6 +27,9 @@
       if (opts.statusCodes) {
         this.statusCodes = opts.statusCodes;
       }
+      if (opts.onRetry) {
+        this.onRetry = opts.onRetry;
+      }
       return this.pipe(null, pipeFailRetry(this, opts));
     };
   });
@@ -44,8 +47,12 @@
 
       // whenever we do make this request, pipe its output to our deferred
       function nextRequest() {
+        if (typeof opts.onRetry == "function") {
+          opts.onRetry();
+        }
+        
         $.ajax(ajaxOptions)
-          .retry({times: times - 1, timeout: opts.timeout, statusCodes: opts.statusCodes})
+          .retry({times: times - 1, timeout: opts.timeout, statusCodes: opts.statusCodes, onRetry: opts.onRetry})
           .pipe(output.resolve, output.reject);
       }
 
